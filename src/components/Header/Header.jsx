@@ -8,7 +8,7 @@ const index = () => {
             <div className="container">
                 <HeaderTop />
                 <HeaderMiddle />
-                <Navigation/>
+                <Navigation />
             </div>
         </header>
     );
