@@ -20,3 +20,8 @@
     background: #F4F5F5;
     clip-path: inset(0 -100vmax);
 }
+
+.card_image {
+    border-radius: 8px;
+    background: url(<path-to-image>), lightgray 0px -0.002px / 100% 100.001% no-repeat;
+}
