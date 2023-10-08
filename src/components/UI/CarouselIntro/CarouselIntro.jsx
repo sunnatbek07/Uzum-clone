@@ -3,7 +3,7 @@ import Banner from "../../../assets/BannerImage.png";
 
 const CarouselIntro = () => {
     return (
-        <Carousel transition={{ duration: 0.5 }} loop={true} autoplay={3000} className="rounded-xl">
+        <Carousel transition={{ duration: 0.5 }} loop={true} autoplay={true} className="rounded-xl">
             <img
                 src={Banner}
                 alt="image 1"
