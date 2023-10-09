@@ -4,13 +4,14 @@ import UzumLogo from "../UI/Icons/UzumLogo";
 import UserIcon from "../UI/Icons/UserIcon";
 import HeartIcon from './../UI/Icons/HeartIcon';
 import CartIcon from './../UI/Icons/CartIcon';
+import { Link } from "react-router-dom";
 
 const HeaderMiddle = () => {
   return (
     <div className="flex items-center justify-between pt-[17px] pb-[10px]">
-      <a href="/">
+      <Link to="/">
         <UzumLogo />
-      </a>
+      </Link>
 
       <div className="flex gap-[7px]">
         <button className="px-[18px] py-2 flex gap-[10px] bg-[#3131C41A] rounded">
@@ -38,10 +39,12 @@ const HeaderMiddle = () => {
           <span className="px-[9px] py-[5px] font-medium text-sm">Saralangan</span>
         </div>
 
-        <div className="flex items-center">
-          <CartIcon />
-          <span className="px-[9px] py-[5px] font-medium text-sm">Savat</span>
-        </div>
+        <Link to="/cart">
+          <div className="flex items-center">
+            <CartIcon />
+            <span className="px-[9px] py-[5px] font-medium text-sm">Savat</span>
+          </div>
+        </Link>
       </div>
     </div>
   );
