@@ -9,74 +9,53 @@ import {
   ArrowRight,
 } from "../../components/UI/CardIcons";
 
+import {
+  Popover,
+  PopoverHandler,
+  PopoverContent,
+} from "@material-tailwind/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/bundle";
 import UnderlineTab from "../../components/UI/Tab";
+import ProductCarousel from "../../components/UI/ProductCarousel";
+import useLikeStore from './../../store/useLikeStore';
 
 const ProductItem = () => {
-  let [data, setData] = useState([]);
   let [product, setProduct] = useState([]);
-  let [count, setCount] = useState(1);
-
-  let location = useLocation();
   let { slug } = useParams();
-
-  function createBreadcrumb(state) {
-    let res = state.split("/").splice(1);
-    setData(res);
-  }
+  const { likeProdFunc } = useLikeStore();
+  const [count, setCount] = useState(1);
+  const [isLike, setIsLike] = useState(false);
 
   const state = () => {
     useProductApi.getOneItem(slug).then((res) => {
       setProduct(res.data[0]);
+      console.log(res.data[0]);
     });
   };
 
+  const setLikeFun = () => {
+    setIsLike(!isLike);
+    likeProdFunc(product, isLike, setIsLike);
+  };
+
   useEffect(() => {
-    createBreadcrumb(location.pathname);
     state();
+    console.log(JSON.parse(localStorage.getItem("LIKE_COLLECTION")));
   }, [slug]);
 
 
   return (
     <section id="item" className="py-8">
       <div className="container mx-auto">
-        <Breadcrumb data={data} />
+        <Breadcrumb />
 
         <div className="flex justify-between gap-x-20 pt-6">
           <div>
             {
-              <Swiper
-                spaceBetween={0}
-                slidesPerView={1}
-                slidesPerGroup={1}
-                pagination={{ clickable: true }}
-                modules={[Pagination, Autoplay, Navigation]}
-                loop={true}
-                navigation={{
-                  nextEl: ".button-next-slide",
-                  prevEl: ".button-prev-slide",
-                }}
-                className="card-slider"
-              >
-                {product?.images?.map((item, index) => (
-                  <SwiperSlide key={index} className="">
-                    <img
-                      src={`https://image.minibox.uz${item}`}
-                      alt="img"
-                      className="w-full"
-                    />
-                  </SwiperSlide>
-                ))}
-                <div className="button-next-slide absolute right-2 top-[50%]  z-50 w-[28px] h-[28px] flex items-center justify-center rounded-full cursor-pointer bg-gray-100 hover:bg-gray-300">
-                  <ArrowRight />
-                </div>
-                <div className="button-next-slide absolute left-2 top-[50%]  z-50 w-[28px] h-[28px] flex items-center justify-center rounded-full cursor-pointer bg-gray-100 hover:bg-gray-300">
-                  <ArrowLeft />
-                </div>
-              </Swiper>
+              <ProductCarousel image={product.images} />
             }
           </div>
 
@@ -86,12 +65,30 @@ const ProductItem = () => {
                 <p>
                   {product.count} ta sotuvda bor
                 </p>
-                <div className="flex items-center gap-[6px] hover:cursor-pointer">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
-                    <path d="M1.81982 6.17836C1.81982 3.78266 3.75498 1.79999 6.1982 1.79999C8.10799 1.79999 9.34311 3.02287 9.91982 3.76804C10.4965 3.02287 11.7317 1.79999 13.6414 1.79999C16.0854 1.79999 18.0198 3.78271 18.0198 6.17836C18.0198 7.22687 17.5993 8.26759 16.9879 9.23849C16.3743 10.2128 15.5466 11.1513 14.6808 12.0039C13.4809 13.1857 12.148 14.2548 11.1919 15.0216C10.7854 15.3476 10.4471 15.6189 10.2162 15.8211C10.0465 15.9695 9.79316 15.9695 9.6235 15.8211C9.39247 15.6189 9.05416 15.3476 8.64775 15.0216C7.6917 14.2548 6.35876 13.1857 5.1588 12.0039C4.29304 11.1513 3.46535 10.2128 2.85176 9.23849C2.24034 8.26759 1.81982 7.22687 1.81982 6.17836ZM6.1982 2.69999C4.25818 2.69999 2.71982 4.27353 2.71982 6.17836C2.71982 6.99067 3.0488 7.86245 3.61332 8.75886C4.17565 9.65177 4.95032 10.5354 5.79031 11.3627C6.95912 12.5138 8.19563 13.5045 9.14039 14.2615C9.43138 14.4947 9.69469 14.7056 9.91982 14.8923C10.1449 14.7056 10.4083 14.4947 10.6992 14.2615C11.644 13.5045 12.8806 12.5138 14.0493 11.3627C14.8894 10.5354 15.664 9.65177 16.2263 8.75886C16.7909 7.86245 17.1198 6.99067 17.1198 6.17836C17.1198 4.27348 15.5821 2.69999 13.6414 2.69999C11.7564 2.69999 10.6561 4.23189 10.3728 4.68924C10.1653 5.02424 9.67437 5.02423 9.46685 4.68923C9.18353 4.23188 8.08332 2.69999 6.1982 2.69999Z" fill="#15151A" />
-                  </svg>
-                  <span>Tanlash</span>
-                </div>
+                <button
+                  onClick={() => setLikeFun()}
+                  className="flex items-center h-[24px] gap-[10px]"
+                >
+                  <span>
+                    {!JSON.parse(localStorage.getItem("LIKE_COLLECTION"))?.find(
+                      (pr) => pr._id === product._id
+                    ) ? (
+                      <i className="bx bx-heart text-md mt-1"></i>
+                    ) : (
+                      <i className="bx bxs-heart-fill text-xl mt-1" style={{color: "#424242"}}></i>
+                    )}
+                  </span>
+                  <div>
+                    {" "}
+                    {!JSON.parse(localStorage.getItem("LIKE_COLLECTION"))?.find(
+                      (pr) => pr._id === product._id
+                    ) ? (
+                      <p className="text-md">Tanlash</p>
+                    ) : (
+                      <p>Tanlangan</p>
+                    )}{" "}
+                  </div>
+                </button>
               </div>
               <h1 className="text-xl font-['InterSemibold'] mb-2">
                 {product?.name}
@@ -105,18 +102,23 @@ const ProductItem = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-x-1">
                     <p>Yetkazib berish:</p>
-                    <button>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
-                        <g clipPath="url(#clip0_221_106)">
-                          <path fillRule="evenodd" clipRule="evenodd" d="M7.46997 14.5C11.336 14.5 14.47 11.366 14.47 7.5C14.47 3.63401 11.336 0.5 7.46997 0.5C3.60398 0.5 0.469971 3.63401 0.469971 7.5C0.469971 11.366 3.60398 14.5 7.46997 14.5ZM8.47 4C8.47 4.55229 8.02228 5 7.47 5C6.91771 5 6.47 4.55229 6.47 4C6.47 3.44772 6.91771 3 7.47 3C8.02228 3 8.47 3.44772 8.47 4ZM6.57009 6.29844C6.23872 6.29844 5.97009 6.56707 5.97009 6.89844C5.97009 7.22981 6.23872 7.49844 6.57009 7.49844H6.87005V10.3024H6.07156C5.74019 10.3024 5.47156 10.571 5.47156 10.9023C5.47156 11.2337 5.74019 11.5023 6.07156 11.5023H8.87152C9.20289 11.5023 9.47152 11.2337 9.47152 10.9023C9.47152 10.571 9.20289 10.3024 8.87152 10.3024H8.07005V6.89844C8.07005 6.56707 7.80143 6.29844 7.47005 6.29844H6.57009Z" fill="#CACBCE" />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_221_106">
-                            <rect width="14" height="14" fill="white" transform="translate(0.469971 0.5)" />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                    </button>
+                    <Popover>
+                      <PopoverHandler>
+                        <svg className="hover:cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+                          <g clipPath="url(#clip0_221_106)">
+                            <path fillRule="evenodd" clipRule="evenodd" d="M7.46997 14.5C11.336 14.5 14.47 11.366 14.47 7.5C14.47 3.63401 11.336 0.5 7.46997 0.5C3.60398 0.5 0.469971 3.63401 0.469971 7.5C0.469971 11.366 3.60398 14.5 7.46997 14.5ZM8.47 4C8.47 4.55229 8.02228 5 7.47 5C6.91771 5 6.47 4.55229 6.47 4C6.47 3.44772 6.91771 3 7.47 3C8.02228 3 8.47 3.44772 8.47 4ZM6.57009 6.29844C6.23872 6.29844 5.97009 6.56707 5.97009 6.89844C5.97009 7.22981 6.23872 7.49844 6.57009 7.49844H6.87005V10.3024H6.07156C5.74019 10.3024 5.47156 10.571 5.47156 10.9023C5.47156 11.2337 5.74019 11.5023 6.07156 11.5023H8.87152C9.20289 11.5023 9.47152 11.2337 9.47152 10.9023C9.47152 10.571 9.20289 10.3024 8.87152 10.3024H8.07005V6.89844C8.07005 6.56707 7.80143 6.29844 7.47005 6.29844H6.57009Z" fill="#CACBCE" />
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_221_106">
+                              <rect width="14" height="14" fill="white" transform="translate(0.469971 0.5)" />
+                            </clipPath>
+                          </defs>
+                        </svg>
+                      </PopoverHandler>
+                      <PopoverContent className="max-w-[250px] bg-[#424242] text-white text-xs">
+                        Мы доставляем товары на следующий день после заказа до собственных пунктов выдачи. Выберите на этапе оформления заказа наиболее удобный для вас адрес.
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <p>1 kun, bepul</p>
                 </div>
