@@ -14,7 +14,7 @@ const Layout = () => {
             setProduct(res.data);
             setLoader();
         }).then((error) => {
-            alert(error.message);
+            console.log(error);
         })
     }, []);
 

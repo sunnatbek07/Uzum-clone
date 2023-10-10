@@ -19,8 +19,8 @@ const HeaderMiddle = () => {
           <p className="text-[#3333CC]">Katalog</p>
         </button>
         <div className="w-[520px] flex items-center justify-between border border-[#76797F4D] rounded">
-          <div className="pl-[17px]">
-            <input className="focus:outline-none" type="text" placeholder="Искать товары и категории" />
+          <div className="pl-[17px] w-full">
+            <input className="focus:outline-none min-w-full" type="text" placeholder="Искать товары и категории" />
           </div>
           <div className="px-[27px] py-2 bg-[rgba(118,121,127,0.05)]">
             <SearchIcon />
@@ -34,10 +34,12 @@ const HeaderMiddle = () => {
           <span className="px-[9px] py-[5px] font-medium text-sm">Kirish</span>
         </div>
 
-        <div className="flex items-center">
-          <HeartIcon />
-          <span className="px-[9px] py-[5px] font-medium text-sm">Saralangan</span>
-        </div>
+        <Link to='/liked'>
+          <div className="flex items-center">
+            <HeartIcon />
+            <span className="px-[9px] py-[5px] font-medium text-sm">Saralangan</span>
+          </div>
+        </Link>
 
         <Link to="/cart">
           <div className="flex items-center">
