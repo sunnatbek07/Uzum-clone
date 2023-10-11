@@ -26,3 +26,7 @@
     border-radius: 8px;
     background: url(<path-to-image>), lightgray 0px -0.002px / 100% 100.001% no-repeat;
 }
+
+.p-galleria-thumbnail-items-container {
+    height: 100% !important;
+}

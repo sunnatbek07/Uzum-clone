@@ -12,7 +12,7 @@ const Cart = () => {
         setData(res.data);
       })
       .catch();
-  }, [data]);
+  }, []);
 
   let price = 0;
   return (
